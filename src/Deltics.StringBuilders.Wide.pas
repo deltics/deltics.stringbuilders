@@ -22,13 +22,15 @@ interface
     protected
       function get_AsString: WideString;
     public
-      procedure Append(aChar: WideChar); overload;
-      procedure Append(const aString: WideString); overload;
-      procedure Append(aStringList: TWideStrings); overload;
-      procedure Append(aStringList: TWideStrings; aSeparator: WideChar); overload;
+      procedure Add(aChar: WideChar); overload;
+      procedure Add(aChar: WideChar; const aRepeats: Integer); overload;
+      procedure Add(const aString: WideString); overload;
+      procedure Add(aStringList: TWideStrings); overload;
+      procedure Add(aStringList: TWideStrings; aSeparator: WideChar); overload;
       procedure CloseParens;
       procedure OpenParens; overload;
       procedure OpenParens(const aParenChar: WideChar); overload;
+      procedure Remove(const aNumChars: Integer);
 
     private
       fParens: WideCharArray;
@@ -64,20 +66,26 @@ implementation
   begin
     SetLength(fParens, Length(fParens) + 1);
     fParens[High(fParens)] := aParenChar;
-    Append(aParenChar);
+    Add(aParenChar);
   end;
 
 
-  procedure TWideStringBuilder.Append(aStringList: TWideStrings);
+  procedure TWideStringBuilder.Remove(const aNumChars: Integer);
+  begin
+    RemoveBytes(aNumChars * 2);
+  end;
+
+
+  procedure TWideStringBuilder.Add(aStringList: TWideStrings);
   var
     i: Integer;
   begin
     for i := 0 to Pred(aStringList.Count) do
-      Append(aStringList[i]);
+      Add(aStringList[i]);
   end;
 
 
-  procedure TWideStringBuilder.Append(aStringList: TWideStrings;
+  procedure TWideStringBuilder.Add(aStringList: TWideStrings;
                                          aSeparator: WideChar);
   var
     i, maxi: Integer;
@@ -85,16 +93,29 @@ implementation
     maxi := Pred(aStringList.Count);
 
     case maxi of
-       0  : Append(aStringList[maxi]);
+       0  : Add(aStringList[maxi]);
       -1  : EXIT;
     else
       for i := 0 to maxi - 1 do
       begin
-        Append(aStringList[i]);
-        Append(aSeparator);
+        Add(aStringList[i]);
+        Add(aSeparator);
       end;
-      Append(aStringList[maxi]);
+      Add(aStringList[maxi]);
     end;
+  end;
+
+
+  procedure TWideStringBuilder.Add(aChar: WideChar; const aRepeats: Integer);
+  var
+    i: Integer;
+    s: WideString;
+  begin
+    SetLength(s, aRepeats);
+    for i := 1 to aRepeats do
+      s[i] := aChar;
+
+    AddBytes(Pointer(s), aRepeats * 2);
   end;
 
 
@@ -104,27 +125,27 @@ implementation
       raise EStringBuilderException.Create('CloseParens called with no corresponding OpenParens');
 
     case fParens[High(fParens)] of
-      '(' : Append(')');
-      '{' : Append('}');
-      '[' : Append(']');
-      '<' : Append('>');
+      '(' : Add(')');
+      '{' : Add('}');
+      '[' : Add(']');
+      '<' : Add('>');
     else
-      Append(fParens[High(fParens)]);
+      Add(fParens[High(fParens)]);
     end;
     SetLength(fParens, Length(fParens) - 1);
   end;
 
 
-  procedure TWideStringBuilder.Append(aChar: WideChar);
+  procedure TWideStringBuilder.Add(aChar: WideChar);
   begin
-    AppendWord(Word(aChar));
+    AddWord(Word(aChar));
   end;
 
 
 
-  procedure TWideStringBuilder.Append(const aString: WideString);
+  procedure TWideStringBuilder.Add(const aString: WideString);
   begin
-    AppendBytes(Pointer(aString), Length(aString) * 2);
+    AddBytes(Pointer(aString), Length(aString) * 2);
   end;
 
 

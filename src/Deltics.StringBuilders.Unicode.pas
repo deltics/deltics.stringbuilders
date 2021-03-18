@@ -22,13 +22,15 @@ interface
     protected
       function get_AsString: UnicodeString;
     public
-      procedure Append(aChar: WideChar); overload;
-      procedure Append(const aString: UnicodeString); overload;
-      procedure Append(aStringList: TUnicodeStrings); overload;
-      procedure Append(aStringList: TUnicodeStrings; aSeparator: WideChar); overload;
+      procedure Add(aChar: WideChar); overload;
+      procedure Add(aChar: WideChar; const aRepeats: Integer); overload;
+      procedure Add(const aString: UnicodeString); overload;
+      procedure Add(aStringList: TUnicodeStrings); overload;
+      procedure Add(aStringList: TUnicodeStrings; aSeparator: WideChar); overload;
       procedure CloseParens;
       procedure OpenParens; overload;
       procedure OpenParens(const aParenChar: WideChar); overload;
+      procedure Remove(const aNumChars: Integer);
 
     private
       fParens: WideCharArray;
@@ -64,20 +66,26 @@ implementation
   begin
     SetLength(fParens, Length(fParens) + 1);
     fParens[High(fParens)] := aParenChar;
-    Append(aParenChar);
+    Add(aParenChar);
   end;
 
 
-  procedure TUnicodeStringBuilder.Append(aStringList: TUnicodeStrings);
+  procedure TUnicodeStringBuilder.Remove(const aNumChars: Integer);
+  begin
+    RemoveBytes(aNumChars * 2);
+  end;
+
+
+  procedure TUnicodeStringBuilder.Add(aStringList: TUnicodeStrings);
   var
     i: Integer;
   begin
     for i := 0 to Pred(aStringList.Count) do
-      Append(aStringList[i]);
+      Add(aStringList[i]);
   end;
 
 
-  procedure TUnicodeStringBuilder.Append(aStringList: TUnicodeStrings;
+  procedure TUnicodeStringBuilder.Add(aStringList: TUnicodeStrings;
                                          aSeparator: WideChar);
   var
     i, maxi: Integer;
@@ -85,16 +93,30 @@ implementation
     maxi := Pred(aStringList.Count);
 
     case maxi of
-       0  : Append(aStringList[maxi]);
+       0  : Add(aStringList[maxi]);
       -1  : EXIT;
     else
       for i := 0 to maxi - 1 do
       begin
-        Append(aStringList[i]);
-        Append(aSeparator);
+        Add(aStringList[i]);
+        Add(aSeparator);
       end;
-      Append(aStringList[maxi]);
+      Add(aStringList[maxi]);
     end;
+  end;
+
+
+  procedure TUnicodeStringBuilder.Add(      aChar: WideChar;
+                                      const aRepeats: Integer);
+  var
+    i: Integer;
+    s: UnicodeString;
+  begin
+    SetLength(s, aRepeats);
+    for i := 1 to aRepeats do
+      s[i] := aChar;
+
+    AddBytes(Pointer(s), aRepeats * 2);
   end;
 
 
@@ -104,26 +126,26 @@ implementation
       raise EStringBuilderException.Create('CloseParens called with no corresponding OpenParens');
 
     case fParens[High(fParens)] of
-      '(' : Append(')');
-      '{' : Append('}');
-      '[' : Append(']');
-      '<' : Append('>');
+      '(' : Add(')');
+      '{' : Add('}');
+      '[' : Add(']');
+      '<' : Add('>');
     else
-      Append(fParens[High(fParens)]);
+      Add(fParens[High(fParens)]);
     end;
     SetLength(fParens, Length(fParens) - 1);
   end;
 
 
-  procedure TUnicodeStringBuilder.Append(aChar: WideChar);
+  procedure TUnicodeStringBuilder.Add(aChar: WideChar);
   begin
-    AppendWord(Word(aChar));
+    AddWord(Word(aChar));
   end;
 
 
-  procedure TUnicodeStringBuilder.Append(const aString: UnicodeString);
+  procedure TUnicodeStringBuilder.Add(const aString: UnicodeString);
   begin
-    AppendBytes(Pointer(aString), Length(aString) * 2);
+    AddBytes(Pointer(aString), Length(aString) * 2);
   end;
 
 

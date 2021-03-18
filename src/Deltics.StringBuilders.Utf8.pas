@@ -22,13 +22,15 @@ interface
     protected
       function get_AsString: Utf8String;
     public
-      procedure Append(aChar: Utf8Char); overload;
-      procedure Append(const aString: Utf8String); overload;
-      procedure Append(aStringList: TUtf8Strings); overload;
-      procedure Append(aStringList: TUtf8Strings; aSeparator: Utf8Char); overload;
+      procedure Add(aChar: Utf8Char); overload;
+      procedure Add(aChar: Utf8Char; const aRepeats: Integer); overload;
+      procedure Add(const aString: Utf8String); overload;
+      procedure Add(aStringList: TUtf8Strings); overload;
+      procedure Add(aStringList: TUtf8Strings; aSeparator: Utf8Char); overload;
       procedure CloseParens;
       procedure OpenParens; overload;
       procedure OpenParens(const aParenChar: Utf8Char); overload;
+      procedure Remove(const aNumChars: Integer);
 
     private
       fParens: Utf8Array;
@@ -64,37 +66,57 @@ implementation
   begin
     SetLength(fParens, Length(fParens) + 1);
     fParens[High(fParens)] := aParenChar;
-    Append(aParenChar);
+    Add(aParenChar);
   end;
 
 
-  procedure TUtf8StringBuilder.Append(aStringList: TUtf8Strings);
+  procedure TUtf8StringBuilder.Remove(const aNumChars: Integer);
+  begin
+    RemoveBytes(aNumChars);
+  end;
+
+
+  procedure TUtf8StringBuilder.Add(aStringList: TUtf8Strings);
   var
     i: Integer;
   begin
     for i := 0 to Pred(aStringList.Count) do
-      Append(aStringList[i]);
+      Add(aStringList[i]);
   end;
 
 
-  procedure TUtf8StringBuilder.Append(aStringList: TUtf8Strings;
-                                      aSeparator: Utf8Char);
+  procedure TUtf8StringBuilder.Add(aStringList: TUtf8Strings;
+                                   aSeparator: Utf8Char);
   var
     i, maxi: Integer;
   begin
     maxi := Pred(aStringList.Count);
 
     case maxi of
-       0  : Append(aStringList[maxi]);
+       0  : Add(aStringList[maxi]);
       -1  : EXIT;
     else
       for i := 0 to maxi - 1 do
       begin
-        Append(aStringList[i]);
-        Append(aSeparator);
+        Add(aStringList[i]);
+        Add(aSeparator);
       end;
-      Append(aStringList[maxi]);
+      Add(aStringList[maxi]);
     end;
+  end;
+
+
+  procedure TUtf8StringBuilder.Add(      aChar: Utf8Char;
+                                   const aRepeats: Integer);
+  var
+    i: Integer;
+    s: Utf8String;
+  begin
+    SetLength(s, aRepeats);
+    for i := 1 to aRepeats do
+      s[i] := aChar;
+
+    AddBytes(Pointer(s), aRepeats);
   end;
 
 
@@ -104,27 +126,27 @@ implementation
       raise EStringBuilderException.Create('CloseParens called with no corresponding OpenParens');
 
     case fParens[High(fParens)] of
-      '(' : Append(')');
-      '{' : Append('}');
-      '[' : Append(']');
-      '<' : Append('>');
+      '(' : Add(')');
+      '{' : Add('}');
+      '[' : Add(']');
+      '<' : Add('>');
     else
-      Append(fParens[High(fParens)]);
+      Add(fParens[High(fParens)]);
     end;
     SetLength(fParens, Length(fParens) - 1);
   end;
 
 
-  procedure TUtf8StringBuilder.Append(aChar: Utf8Char);
+  procedure TUtf8StringBuilder.Add(aChar: Utf8Char);
   begin
-    AppendByte(Byte(aChar));
+    AddByte(Byte(aChar));
   end;
 
 
 
-  procedure TUtf8StringBuilder.Append(const aString: Utf8String);
+  procedure TUtf8StringBuilder.Add(const aString: Utf8String);
   begin
-    AppendBytes(Pointer(aString), Length(aString));
+    AddBytes(Pointer(aString), Length(aString));
   end;
 
 

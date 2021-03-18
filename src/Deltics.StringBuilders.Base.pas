@@ -33,9 +33,10 @@ interface
       fSize: Integer;
       procedure IncreaseCapacity;
     protected
-      procedure AppendByte(const aByte: Byte);
-      procedure AppendBytes(const aBuffer: Pointer; const aNumBytes: Integer);
-      procedure AppendWord(const aWord: Word);
+      procedure AddByte(const aByte: Byte);
+      procedure AddBytes(const aBuffer: Pointer; const aNumBytes: Integer);
+      procedure AddWord(const aWord: Word);
+      procedure RemoveBytes(const aNumBytes: Integer);
     public
       constructor Create; overload;
       constructor Create(const aInitialCapacity: Integer); overload;
@@ -50,7 +51,8 @@ interface
 implementation
 
   uses
-    Deltics.Memory;
+    Deltics.Memory,
+    Deltics.StringBuilders.Exceptions;
 
 
 
@@ -116,6 +118,16 @@ implementation
   end;
 
 
+  procedure TStringBuilder.RemoveBytes(const aNumBytes: Integer);
+  begin
+    if aNumBytes > fSize then
+      raise EStringBuilderException.Create('Attempt to remove more characters than have been added');
+
+    Dec(fSize, aNumBytes);
+    Dec(fCurr, aNumBytes);
+  end;
+
+
   procedure TStringBuilder.set_Capacity(const aValue: Integer);
   begin
     if aValue <= fCapacity then
@@ -129,7 +141,7 @@ implementation
   end;
 
 
-  procedure TStringBuilder.AppendByte(const aByte: Byte);
+  procedure TStringBuilder.AddByte(const aByte: Byte);
   begin
     if Size = Capacity then
       IncreaseCapacity;
@@ -141,7 +153,7 @@ implementation
   end;
 
 
-  procedure TStringBuilder.AppendBytes(const aBuffer: Pointer;
+  procedure TStringBuilder.AddBytes(const aBuffer: Pointer;
                                        const aNumBytes: Integer);
   begin
     if aNumBytes = 0 then
@@ -157,7 +169,7 @@ implementation
   end;
 
 
-  procedure TStringBuilder.AppendWord(const aWord: Word);
+  procedure TStringBuilder.AddWord(const aWord: Word);
   begin
     if Capacity - Size < 2 then
       IncreaseCapacity;

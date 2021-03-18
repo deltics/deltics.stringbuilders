@@ -14,12 +14,15 @@ interface
     WideStringBuilder = class(TTest)
       procedure SetupMethod;
 
-      procedure AppendCharAppendsCorrectly;
-      procedure AppendStringAppendsCorrectly;
+      procedure AddCharAddsCorrectly;
+      procedure AddStringAddsCorrectly;
       procedure ClearResetsTheBuilder;
       procedure CloseParensMatchesParenCharUsedInOpenParens;
-      procedure DefaultOpenParensFollowedByCloseParensAppendsEmptyParens;
+      procedure DefaultOpenParensFollowedByCloseParensAddsEmptyParens;
       procedure MismatchedCloseParensRaisesEStringBuilderException;
+      procedure AddRepeatsAddsCorrectNumberOfChars;
+      procedure RemoveRemovesCorrectNumberOfChars;
+      procedure RemovingExcessCharactersRaisesEStringBuilderException;
     end;
 
 
@@ -45,26 +48,33 @@ implementation
 
 
 
-  procedure WideStringBuilder.AppendCharAppendsCorrectly;
+  procedure WideStringBuilder.AddCharAddsCorrectly;
   begin
     Test('AsString').Assert(sut.AsString).IsEmpty;
 
-    sut.Append('A');
+    sut.Add('A');
     Test('AsString').Assert(sut.AsString).Equals('A');
 
-    sut.Append('B');
+    sut.Add('B');
     Test('AsString').Assert(sut.AsString).Equals('AB');
   end;
 
 
-  procedure WideStringBuilder.AppendStringAppendsCorrectly;
+  procedure WideStringBuilder.AddRepeatsAddsCorrectNumberOfChars;
+  begin
+    sut.Add(WideChar('x'), 4);
+    Test('AsString').Assert(sut.AsString).Equals('xxxx');
+  end;
+
+
+  procedure WideStringBuilder.AddStringAddsCorrectly;
   begin
     Test('AsString').Assert(sut.AsString).IsEmpty;
 
-    sut.Append('ABC');
+    sut.Add('ABC');
     Test('AsString').Assert(sut.AsString).Equals('ABC');
 
-    sut.Append('123');
+    sut.Add('123');
     Test('AsString').Assert(sut.AsString).Equals('ABC123');
   end;
 
@@ -73,7 +83,7 @@ implementation
   begin
     Test('AsString').Assert(sut.AsString).IsEmpty;
 
-    sut.Append('anything');
+    sut.Add('anything');
 
     Test('AsString').Assert(sut.AsString).Equals('anything');
 
@@ -111,7 +121,7 @@ implementation
   end;
 
 
-  procedure WideStringBuilder.DefaultOpenParensFollowedByCloseParensAppendsEmptyParens;
+  procedure WideStringBuilder.DefaultOpenParensFollowedByCloseParensAddsEmptyParens;
   begin
     sut.OpenParens;
     sut.CloseParens;
@@ -128,8 +138,21 @@ implementation
   end;
 
 
+  procedure WideStringBuilder.RemoveRemovesCorrectNumberOfChars;
+  begin
+    sut.Add('The quick brown fox');
+    sut.Remove(4);
+
+    Test('AsString').Assert(sut.AsString).Equals('The quick brown');
+  end;
 
 
+  procedure WideStringBuilder.RemovingExcessCharactersRaisesEStringBuilderException;
+  begin
+    Test.Raises(EStringBuilderException);
+
+    sut.Remove(1);
+  end;
 
 
 

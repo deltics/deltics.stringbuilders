@@ -22,13 +22,15 @@ interface
     protected
       function get_AsString: AnsiString;
     public
-      procedure Append(aChar: AnsiChar); overload;
-      procedure Append(const aString: AnsiString); overload;
-      procedure Append(aStringList: TAnsiStrings); overload;
-      procedure Append(aStringList: TAnsiStrings; aSeparator: AnsiChar); overload;
+      procedure Add(aChar: AnsiChar); overload;
+      procedure Add(aChar: AnsiChar; const aRepeats: Integer); overload;
+      procedure Add(const aString: AnsiString); overload;
+      procedure Add(aStringList: TAnsiStrings); overload;
+      procedure Add(aStringList: TAnsiStrings; aSeparator: AnsiChar); overload;
       procedure CloseParens;
       procedure OpenParens; overload;
       procedure OpenParens(const aParenChar: AnsiChar); overload;
+      procedure Remove(const aNumChars: Integer);
 
     private
       fParens: AnsiCharArray;
@@ -64,20 +66,26 @@ implementation
   begin
     SetLength(fParens, Length(fParens) + 1);
     fParens[High(fParens)] := aParenChar;
-    Append(aParenChar);
+    Add(aParenChar);
   end;
 
 
-  procedure TAnsiStringBuilder.Append(aStringList: TAnsiStrings);
+  procedure TAnsiStringBuilder.Remove(const aNumChars: Integer);
+  begin
+    RemoveBytes(aNumChars);
+  end;
+
+
+  procedure TAnsiStringBuilder.Add(aStringList: TAnsiStrings);
   var
     i: Integer;
   begin
     for i := 0 to Pred(aStringList.Count) do
-      Append(aStringList[i]);
+      Add(aStringList[i]);
   end;
 
 
-  procedure TAnsiStringBuilder.Append(aStringList: TAnsiStrings;
+  procedure TAnsiStringBuilder.Add(aStringList: TAnsiStrings;
                                       aSeparator: AnsiChar);
   var
     i, maxi: Integer;
@@ -85,16 +93,30 @@ implementation
     maxi := Pred(aStringList.Count);
 
     case maxi of
-       0  : Append(aStringList[maxi]);
+       0  : Add(aStringList[maxi]);
       -1  : EXIT;
     else
       for i := 0 to maxi - 1 do
       begin
-        Append(aStringList[i]);
-        Append(aSeparator);
+        Add(aStringList[i]);
+        Add(aSeparator);
       end;
-      Append(aStringList[maxi]);
+      Add(aStringList[maxi]);
     end;
+  end;
+
+
+  procedure TAnsiStringBuilder.Add(      aChar: AnsiChar;
+                                   const aRepeats: Integer);
+  var
+    i: Integer;
+    s: AnsiString;
+  begin
+    SetLength(s, aRepeats);
+    for i := 1 to aRepeats do
+      s[i] := aChar;
+
+    AddBytes(Pointer(s), aRepeats);
   end;
 
 
@@ -104,26 +126,26 @@ implementation
       raise EStringBuilderException.Create('CloseParens called with no corresponding OpenParens');
 
     case fParens[High(fParens)] of
-      '(' : Append(')');
-      '{' : Append('}');
-      '[' : Append(']');
-      '<' : Append('>');
+      '(' : Add(')');
+      '{' : Add('}');
+      '[' : Add(']');
+      '<' : Add('>');
     else
-      Append(fParens[High(fParens)]);
+      Add(fParens[High(fParens)]);
     end;
     SetLength(fParens, Length(fParens) - 1);
   end;
 
 
-  procedure TAnsiStringBuilder.Append(aChar: AnsiChar);
+  procedure TAnsiStringBuilder.Add(aChar: AnsiChar);
   begin
-    AppendByte(Byte(aChar));
+    AddByte(Byte(aChar));
   end;
 
 
-  procedure TAnsiStringBuilder.Append(const aString: AnsiString);
+  procedure TAnsiStringBuilder.Add(const aString: AnsiString);
   begin
-    AppendBytes(Pointer(aString), Length(aString));
+    AddBytes(Pointer(aString), Length(aString));
   end;
 
 
