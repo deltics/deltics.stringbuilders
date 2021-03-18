@@ -56,7 +56,7 @@ implementation
 
   procedure TWideStringBuilder.OpenParens;
   begin
-    OpenParens('(');
+    OpenParens(WideChar('('));
   end;
 
 

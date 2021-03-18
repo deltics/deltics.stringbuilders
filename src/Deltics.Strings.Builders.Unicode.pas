@@ -56,7 +56,7 @@ implementation
 
   procedure TUnicodeStringBuilder.OpenParens;
   begin
-    OpenParens('(');
+    OpenParens(WideChar('('));
   end;
 
 

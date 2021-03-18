@@ -85,27 +85,27 @@ implementation
 
   procedure UnicodeStringBuilder.CloseParensMatchesParenCharUsedInOpenParens;
   begin
-    sut.OpenParens('(');
+    sut.OpenParens(WideChar('('));
     sut.CloseParens;
     Test('AsString').Assert(sut.AsString).Equals('()');
 
     sut.Clear;
-    sut.OpenParens('<');
+    sut.OpenParens(WideChar('<'));
     sut.CloseParens;
     Test('AsString').Assert(sut.AsString).Equals('<>');
 
     sut.Clear;
-    sut.OpenParens('[');
+    sut.OpenParens(WideChar('['));
     sut.CloseParens;
     Test('AsString').Assert(sut.AsString).Equals('[]');
 
     sut.Clear;
-    sut.OpenParens('{');
+    sut.OpenParens(WideChar('{'));
     sut.CloseParens;
     Test('AsString').Assert(sut.AsString).Equals('{}');
 
     sut.Clear;
-    sut.OpenParens('#');
+    sut.OpenParens(WideChar('#'));
     sut.CloseParens;
     Test('AsString').Assert(sut.AsString).Equals('##');
   end;
