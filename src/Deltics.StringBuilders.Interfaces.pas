@@ -1,13 +1,13 @@
 
-{$i deltics.strings.builders.inc}
+{$i deltics.stringbuilders.inc}
 
-  unit Deltics.Strings.Builders.Interfaces;
+  unit Deltics.StringBuilders.Interfaces;
 
 
 interface
 
   uses
-    Deltics.Strings.Lists,
+    Deltics.StringLists,
     Deltics.StringTypes;
 
 

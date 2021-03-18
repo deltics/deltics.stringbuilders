@@ -6,18 +6,18 @@
 
 uses
   Deltics.Smoketest,
-  Deltics.Strings.Builders in '..\src\Deltics.Strings.Builders.pas',
-  Deltics.Strings.Builders.Base in '..\src\Deltics.Strings.Builders.Base.pas',
-  Deltics.Strings.Builders.Exceptions in '..\src\Deltics.Strings.Builders.Exceptions.pas',
-  Deltics.Strings.Builders.Interfaces in '..\src\Deltics.Strings.Builders.Interfaces.pas',
-  Deltics.Strings.Builders.Ansi in '..\src\Deltics.Strings.Builders.Ansi.pas',
-  Deltics.Strings.Builders.Unicode in '..\src\Deltics.Strings.Builders.Unicode.pas',
-  Deltics.Strings.Builders.Utf8 in '..\src\Deltics.Strings.Builders.Utf8.pas',
-  Deltics.Strings.Builders.Wide in '..\src\Deltics.Strings.Builders.Wide.pas',
   Test.AnsiStringBuilder in 'Test.AnsiStringBuilder.pas',
   Test.UnicodeStringBuilder in 'Test.UnicodeStringBuilder.pas',
   Test.Utf8StringBuilder in 'Test.Utf8StringBuilder.pas',
-  Test.WideStringBuilder in 'Test.WideStringBuilder.pas';
+  Test.WideStringBuilder in 'Test.WideStringBuilder.pas',
+  Deltics.StringBuilders.Ansi in '..\src\Deltics.StringBuilders.Ansi.pas',
+  Deltics.StringBuilders.Base in '..\src\Deltics.StringBuilders.Base.pas',
+  Deltics.StringBuilders.Exceptions in '..\src\Deltics.StringBuilders.Exceptions.pas',
+  Deltics.StringBuilders.Interfaces in '..\src\Deltics.StringBuilders.Interfaces.pas',
+  Deltics.StringBuilders in '..\src\Deltics.StringBuilders.pas',
+  Deltics.StringBuilders.Unicode in '..\src\Deltics.StringBuilders.Unicode.pas',
+  Deltics.StringBuilders.Utf8 in '..\src\Deltics.StringBuilders.Utf8.pas',
+  Deltics.StringBuilders.Wide in '..\src\Deltics.StringBuilders.Wide.pas';
 
 begin
   TestRun.Test(AnsiStringBuilder);

@@ -1,8 +1,8 @@
 
-{$i deltics.strings.builders.inc}
+{$i deltics.stringbuilders.inc}
 
 
-  unit Deltics.Strings.Builders.Base;
+  unit Deltics.StringBuilders.Base;
 
 
 interface
@@ -11,8 +11,8 @@ interface
     Classes,
     SysUtils,
     Deltics.InterfacedObjects,
-    Deltics.Strings.Lists,
-    Deltics.Strings.Builders.Interfaces,
+    Deltics.StringLists,
+    Deltics.StringBuilders.Interfaces,
     Deltics.StringTypes;
 
 

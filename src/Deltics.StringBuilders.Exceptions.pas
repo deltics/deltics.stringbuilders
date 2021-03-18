@@ -1,7 +1,7 @@
 
-{$i deltics.strings.builders.inc}
+{$i deltics.stringbuilders.inc}
 
-  unit Deltics.Strings.Builders.Exceptions;
+  unit Deltics.StringBuilders.Exceptions;
 
 
 interface

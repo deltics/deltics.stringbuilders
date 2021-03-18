@@ -29,7 +29,7 @@ implementation
 
   uses
     SysUtils,
-    Deltics.Strings.Builders;
+    Deltics.StringBuilders;
 
 
 { Utf8StringBuilder }
