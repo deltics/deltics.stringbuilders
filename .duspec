@@ -1,0 +1,34 @@
+{
+  "id":"deltics.strings.builders",
+  "version":"",
+  "summary":"String builders for efficient, type-safe assembly of different standard 'String' types (Ansi, Unicode, Utf8, Wide).",
+  "tags":[
+    "deltics",
+    "strings",
+    "unicode"
+  ],
+  "copyright":"\u00a92020 Jolyon Direnko-Smith",
+  "language":"en",
+  "content":"source",
+  "dependencies":[
+    "deltics.inc:1.3.0",
+    "deltics.exceptions:1.1.0",
+    "deltics.interfacedobjects:1.2.0",
+    "deltics.memory:1.0.0",
+    "deltics.strings.lists:2.0.0-beta.3",
+    "deltics.stringtypes:1.1.0"
+  ],
+  "source":{
+      "files":[
+        "src\\deltics.strings.builders.inc",
+        "src\\Deltics.Strings.Builders.pas",
+        "src\\Deltics.Strings.Builders.Base.pas",
+        "src\\Deltics.Strings.Builders.Exceptions.pas",
+        "src\\Deltics.Strings.Builders.Interfaces.pas",
+        "src\\Deltics.Strings.Builders.Ansi.pas",
+        "src\\Deltics.Strings.Builders.Unicode.pas",
+        "src\\Deltics.Strings.Builders.Utf8.pas",
+        "src\\Deltics.Strings.Builders.Wide.pas"
+      ]
+    }
+}
