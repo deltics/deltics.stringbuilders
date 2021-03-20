@@ -1,2 +1,2 @@
-# Deltics.Strings.Builders
+# Deltics.StringBuilders
 
